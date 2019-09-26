@@ -1,0 +1,18 @@
+workspace:
+  base: /go
+  path: src/github.com/pbalogh-sa/drone-sonar-scanner
+
+pipeline:
+  build:
+    image: golang:1.9
+    environment:
+      - CGO_ENABLED=0
+    commands:
+      - go test -cover -coverprofile=coverage.out
+      - go build -ldflags "-s -w -X main.revision=$(git rev-parse HEAD)" -a
+
+  static_scan:
+    image: poke/sonar-scanner
+    quality: OK
+    secrets: [ sonar_host, sonar_token ]
+    
