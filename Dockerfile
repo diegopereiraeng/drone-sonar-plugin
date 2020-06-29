@@ -1,19 +1,21 @@
 FROM openjdk:8-jre-alpine
 
-ENV SONAR_SCANNER_OPTS="-Xmx512m" \
-    SONAR_SCANNER_VER="4.0.0.1744" \
-    PATH=/opt/sonar-scanner/bin:${PATH}
+LABEL maintainer="Daniel Ramirez <dxas90@gmail.com>"
 
-RUN apk update && \
-    apk add --no-cache ca-certificates git && \
-    rm -rf /var/cache/apk/* && \
-    mkdir /opt
+ARG SONAR_VERSION=4.0.0.1744
+ARG SONAR_SCANNER_CLI=sonar-scanner-cli-${SONAR_VERSION}
+ARG SONAR_SCANNER=sonar-scanner-${SONAR_VERSION}
 
-ADD https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VER}.zip /tmp/sonar-scanner-cli-${SONAR_SCANNER_VER}.zip
-RUN unzip -q /tmp/sonar-scanner-cli-${SONAR_SCANNER_VER}.zip -d /opt/ && \
-    rm -rf /tmp/sonar-scanner-cli-${SONAR_SCANNER_VER}.zip && \
-    ln -s /opt/sonar-scanner-${SONAR_SCANNER_VER} /opt/sonar-scanner
+# RUN apk add --no-cache --update nodejs curl
+COPY sonar-scanner-plugin /bin/
+COPY sonar-scanner-cli-4.0.0.1744.zip  /bin/${SONAR_SCANNER_CLI}.zip
+WORKDIR /bin
 
-COPY sonar-scanner.properties.tmpl /opt/sonar-scanner/conf/sonar-scanner.properties.tmpl
-ADD sonar-scanner-plugin /bin/
-ENTRYPOINT ["/bin/sonar-scanner-plugin"]
+# curl -fsSLO https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/${SONAR_SCANNER_CLI}.zip && \
+RUN unzip -q ${SONAR_SCANNER_CLI}.zip && \
+    rm -f ${SONAR_SCANNER_CLI}.zip
+
+ENV PATH $PATH:/bin/${SONAR_SCANNER}/bin
+ENV SONAR_SCANNER_OPTS -Xmx512m
+
+ENTRYPOINT /bin/sonar-scanner-plugin

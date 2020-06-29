@@ -10,9 +10,9 @@ import (
 
 var version string // build number set at compile-time
 
-func main() {
+func amain() {
 	app := cli.NewApp()
-	app.Name = "drone sonar-scanner plugin"
+	app.Name = "drone-sonar-scanner"
 	app.Usage = "Drone plugin integrate sonar-scanner and results of SonarQube Quality Gates."
 	app.Action = run
 	app.Version = version
@@ -90,6 +90,12 @@ func main() {
 			EnvVar: "SONAR_QUALITYGATE,PLUGIN_QUALITYGATE",
 			Value:  "OK",
 		},
+		cli.StringFlag{
+			Name:   "settings",
+			Usage:  "Project settings",
+			EnvVar: "SONAR_PROJECT_SETTINGS,PLUGIN_PROJECT_SETTINGS",
+			Value:  "sonar-project.properties",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -114,6 +120,7 @@ func run(c *cli.Context) {
 		Remote:     c.String("remote"),
 		Branch:     c.String("branch"),
 		Quality:    c.String("quality"),
+		Settings:   c.String("settings"),
 	}
 	os.Setenv("TOKEN", base64.StdEncoding.EncodeToString([]byte(c.String("token")+":")))
 	if err := plugin.Exec(); err != nil {

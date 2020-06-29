@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/pelletier/go-toml"
@@ -37,6 +36,7 @@ type (
 		Remote     string
 		Branch     string
 		Quality    string
+		Settings   string
 	}
 	// SonarReport it is the representation of .scannerwork/report-task.txt
 	SonarReport struct {
@@ -78,44 +78,10 @@ func init() {
 	}
 }
 
-func (p Plugin) buildScannerProperties() error {
-
-	p.Key = strings.Replace(p.Key, "/", ":", -1)
-
-	tmpl, err := template.ParseFiles("/opt/sonar-scanner/conf/sonar-scanner.properties.tmpl")
-	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"error": err,
-		}).Fatal("Template parsing failed")
-	}
-
-	f, err := os.Create("/opt/sonar-scanner/conf/sonar-scanner.properties")
-	defer f.Close()
-	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"error": err,
-		}).Fatal("sonar-properties file creation failed")
-	}
-
-	err = tmpl.ExecuteTemplate(f, "sonar-scanner.properties.tmpl", p)
-	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"error": err,
-		}).Fatal("Template execution failed")
-	}
-
-	return nil
-}
-
 // Exec executes the plugin step
 func (p Plugin) Exec() error {
 
-	err := p.buildScannerProperties()
-	if err != nil {
-		return err
-	}
-
-	report, err := staticScan()
+	report, err := staticScan(&p)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err,
@@ -144,22 +110,59 @@ func (p Plugin) Exec() error {
 	return nil
 }
 
-func staticScan() (*SonarReport, error) {
-	cmd := exec.Command("/opt/sonar-scanner/bin/sonar-scanner")
+func staticScan(p *Plugin) (*SonarReport, error) {
+	if _, err := os.Stat(p.Settings); errors.Is(err, os.ErrExist) {
+		cmd := exec.Command("sed", "-e", "s/=/=\"/", "-e", "s/$/\"/", p.Settings)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"error": err,
+			}).Fatal("Run command sed failed")
+			return nil, err
+		}
+		// log.Printf("%s\n",output)
+
+		report := SonarReport{}
+		err = toml.Unmarshal(output, &report)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"error": err,
+			}).Fatal("Toml Unmarshal failed")
+			return nil, err
+		}
+
+	}
+	args := []string{
+		"-Dsonar.projectKey=" + strings.Replace(p.Key, "/", ":", -1),
+		"-Dsonar.projectName=" + p.Name,
+		"-Dsonar.host.url=" + p.Host,
+		"-Dsonar.login=" + p.Token,
+		"-Dsonar.projectVersion=" + p.Version,
+		"-Dsonar.sources=" + p.Sources,
+		"-Dproject.settings=" + p.Settings,
+		"-Dsonar.ws.timeout=360",
+		"-Dsonar.inclusions=" + p.Inclusions,
+		"-Dsonar.exclusions=" + p.Exclusions,
+		"-Dsonar.profile=" + p.Profile,
+		"-Dsonar.branch=" + p.Branch,
+		"-Dsonar.scm.provider=git",
+	}
+
+	cmd := exec.Command("sonar-scanner", args...)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err,
-		}).Fatal("Run command failed")
+		}).Fatal("Run command sonar-scanner failed")
 		return nil, err
 	}
 	fmt.Printf("out:\n%s", output)
-	cmd = exec.Command("/bin/sed", "-e", "s/=/=\"/", "-e", "s/$/\"/", ".scannerwork/report-task.txt")
+	cmd = exec.Command("sed", "-e", "s/=/=\"/", "-e", "s/$/\"/", ".scannerwork/report-task.txt")
 	output, err = cmd.CombinedOutput()
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err,
-		}).Fatal("Run command failed")
+		}).Fatal("Run command sed failed")
 		return nil, err
 	}
 	// log.Printf("%s\n",output)
