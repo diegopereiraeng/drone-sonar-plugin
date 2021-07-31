@@ -13,7 +13,7 @@ var version string // build number set at compile-time
 func amain() {
 	app := cli.NewApp()
 	app.Name = "drone-sonar-scanner"
-	app.Usage = "Drone plugin integrate sonar-scanner and results of SonarQube Quality Gates."
+	app.Usage = "Drone plugin integrate sonar-scanner and results of SonarQube Quality Gates!"
 	app.Action = run
 	app.Version = version
 	app.Flags = []cli.Flag{
