@@ -8,6 +8,7 @@ import (
 
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
+	"github.com/diegopereiraeng/harness-cie-sonarqube-scanner/artifact"
 
 	"encoding/json"
 	"errors"
@@ -117,6 +118,18 @@ type (
 	Failure struct {
 		Text    string `xml:",chardata"`
 		Message string `xml:"message,attr"`
+	}
+	Artifact struct {
+		Tags         []string                  // Docker artifact tags
+		Repo         string                    // Docker artifact repository
+		Registry     string                    // Docker artifact registry
+		RegistryType artifact.RegistryTypeEnum // Rocker artifact registry type
+		ArtifactFile string                    // Artifact file location
+	}
+	// Plugin defines the Docker plugin parameters.
+	Plugin struct {
+		Build    Build    // Docker build configuration
+		Artifact Artifact // Artifact file content
 	}
 )
 
@@ -294,6 +307,14 @@ func (p Plugin) Exec() error {
 		fmt.Printf(p.Config.Name)
 		fmt.Printf("\n==> Harness CIE SonarQube Plugin with Quality Gateway <==\n\n")
 	}
+	if p.ArtifactFile != "" {
+		err = artifact.WritePluginArtifactFile("sonar/v1", "test_file", "Sonar Docker", "harness-cie-sonarqube-scanner", string(status), "1.0")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed to write plugin artifact file at path: %s with error: %s\n", "sonar test", err)
+		}
+	}
+
+	
 
 	return nil
 }
