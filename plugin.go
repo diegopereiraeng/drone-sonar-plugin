@@ -8,7 +8,7 @@ import (
 
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
-	"github.com/diegopereiraeng/harness-cie-sonarqube-scanner/artifact"
+	"artifact/artifact.go"
 
 	"encoding/json"
 	"errors"
