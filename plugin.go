@@ -279,13 +279,14 @@ func (p Plugin) Exec() error {
 
 	status := getStatus(task, report)
 
-	if status != p.Config.Quality && p.Config.QualityEnabled == "true" {
+	if (status != p.Config.Quality && p.Config.QualityEnabled == "true") {
 		fmt.Printf("\n==> QUALITY ENABLED ENALED  - set quality_gate_enabled as false to disable qg\n")
 		logrus.WithFields(logrus.Fields{
 			"status": status,
 		}).Fatal("QualityGate status failed")
-	} else {
-		if status != p.Config.Quality {
+	}
+	else {
+		if (status != p.Config.Quality) {
 			fmt.Printf("\n==> QUALITY GATEWAY DISABLED\n")
 			fmt.Printf("\n==> FAILED <==\n")
 			logrus.WithFields(logrus.Fields{
