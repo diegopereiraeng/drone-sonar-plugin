@@ -125,11 +125,6 @@ type (
 		RegistryType artifact.RegistryTypeEnum // Rocker artifact registry type
 		ArtifactFile string                    // Artifact file location
 	}
-	// Plugin defines the Docker plugin parameters.
-	Plugin struct {
-		Build    Build    // Docker build configuration
-		Artifact Artifact // Artifact file content
-	}
 )
 
 func init() {
