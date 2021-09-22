@@ -273,27 +273,27 @@ func (p Plugin) Exec() error {
 
 	status := getStatus(task, report)
 
-	if (status != p.Config.Quality && p.Config.QualityEnabled == "true") {
+	if status != p.Config.Quality && p.Config.QualityEnabled == "true" {
 		fmt.Printf("\n==> QUALITY ENABLED ENALED  - set quality_gate_enabled as false to disable qg\n")
 		logrus.WithFields(logrus.Fields{
 			"status": status,
 		}).Fatal("QualityGate status failed")
 	}
-	if (status != p.Config.Quality && p.Config.QualityEnabled == "false") {
+	if status != p.Config.Quality && p.Config.QualityEnabled == "false" {
 		fmt.Printf("\n==> QUALITY GATEWAY DISABLED\n")
 		fmt.Printf("\n==> FAILED <==\n")
 		logrus.WithFields(logrus.Fields{
 			"status": status,
 		}).Info("Quality Gate Status FAILED")
 	}
-	if (status == p.Config.Quality {
+	if status == p.Config.Quality {
 		fmt.Printf("\n==> QUALITY ENABLED ENALED \n")
 		fmt.Printf("\n==> PASSED <==\n")
 		logrus.WithFields(logrus.Fields{
 			"status": status,
 		}).Info("Quality Gate Status Success")
 	}
-	
+
 	fmt.Printf("\n")
 	fmt.Printf("==> SONAR PROJECT DASHBOARD <==\n")
 	fmt.Printf(p.Config.Host)
@@ -306,9 +306,6 @@ func (p Plugin) Exec() error {
 			fmt.Fprintf(os.Stderr, "failed to write plugin artifact file at path: %s with error: %s\n", "sonar test", err)
 		}
 	}
-
-	
-
 	return nil
 }
 
