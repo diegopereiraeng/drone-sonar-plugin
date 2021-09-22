@@ -9,6 +9,7 @@ import (
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
 
+	"artifact.go"
 	"encoding/json"
 	"errors"
 	"io/ioutil"

@@ -1,4 +1,4 @@
-package main
+package artifact
 
 import (
 	"encoding/json"
