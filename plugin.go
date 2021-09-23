@@ -6,8 +6,10 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/diegopereiraeng/harness-cie-sonarqube-scanner/utils/artifact"
+
 	"github.com/pelletier/go-toml"
-	"github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus" 
 
 	"encoding/json"
 	"errors"
@@ -45,7 +47,7 @@ type (
 		Quality         string
 		QualityEnabled  string
 	}
-	// SonarReport it is the representation of .scannerwork/report-task.txt
+	// SonarReport it is the representation of .scannerwork/report-task.txt //
 	SonarReport struct {
 		ProjectKey   string `toml:"projectKey"`
 		ServerURL    string `toml:"serverUrl"`
