@@ -15,8 +15,11 @@ RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o harness-sonar
 
 FROM openjdk:11.0.8-jre
 FROM openjdk:8-alpine
-RUN ls /usr/lib/jvm/
-RUN java --version
+RUN ls /usr/lib/jvm/default-jvm/bin
+RUN ls /usr/lib/jvm/java-1.8-openjdk/bin
+RUN /usr/lib/jvm/default-jvm/bin/java -version
+RUN /usr/lib/jvm/java-1.8-openjdk/bin/java -version
+RUN java -version
 
 ARG SONAR_VERSION=4.5.0.2216
 ARG SONAR_SCANNER_CLI=sonar-scanner-cli-${SONAR_VERSION}
