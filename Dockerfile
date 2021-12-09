@@ -14,7 +14,7 @@ RUN go get github.com/urfave/cli
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o harness-sonar
 
 FROM openjdk:11.0.8-jre
-RUN apk add --no-cache openjdk8
+RUN apt-get -y openjdk8
 RUN ls /usr/lib/jvm/
 RUN java --version
 
