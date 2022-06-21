@@ -226,8 +226,8 @@ func (p Plugin) Exec() error {
 	if len(p.Config.CSOpenCoverReportPaths) >= 1 {
 		args = append(args, "-Dsonar.cs.opencover.reportsPaths="+p.Config.CSOpenCoverReportPaths)
 	}
-	if p.Config.Libraries {
-		args = append(args, "-Dsonar.java.libraries=" + p.Config.Libraries)
+	if len(p.Config.Libraries) > 1 {
+		args = append(args, "-Dsonar.java.libraries="+p.Config.Libraries)
 	}
 	os.Setenv("SONAR_USER_HOME", ".sonar")
 
