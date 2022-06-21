@@ -129,7 +129,7 @@ func main() {
 			Name:   "libraries",
 			Usage:  "Comma-separated paths to files with third-party libraries (JAR or Zip files) used by your project. Wildcards can be used: sonar.java.libraries=path/to/Library.jar,directory/**/*.jar",
 			Value:  "",
-			EnvVar: "LIBRARIES",
+			EnvVar: "PLUGIN_LIBRARIES",
 		},
 	}
 	app.Run(os.Args)
