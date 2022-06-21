@@ -125,6 +125,12 @@ func main() {
 			Value:  "",
 			EnvVar: "PLUGIN_CS_OPENCOVER_REPORTPATHS",
 		},
+		cli.StringFlag{
+			Name:   "libraries",
+			Usage:  "Comma-separated paths to files with third-party libraries (JAR or Zip files) used by your project. Wildcards can be used: sonar.java.libraries=path/to/Library.jar,directory/**/*.jar",
+			Value:  "",
+			EnvVar: "LIBRARIES",
+		},
 	}
 	app.Run(os.Args)
 }
@@ -151,6 +157,7 @@ func run(c *cli.Context) {
 			ArtifactFile:           c.String("artifact_file"),
 			QualityTimeout:         c.String("qualitygate_timeout"),
 			CSOpenCoverReportPaths: c.String("cs_opencover_reportsPaths"),
+			Libraries:              c.String("libraries"),
 		},
 	}
 	os.Setenv("TOKEN", base64.StdEncoding.EncodeToString([]byte(c.String("token")+":")))

@@ -102,5 +102,8 @@ sonar-scanner \
   -Dsonar.projectName=Neptune/news \
   -Dsonar.projectVersion=1.0 \
   -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=60878847cea1a31d817f0deee3daa7868c431433
+  -Dsonar.login=60878847cea1a31d817f0deee3daa7868c431433 \
+  [ -Dsonar.java.libraries=target/dependency ]
 ```
+
+[ optional ]
