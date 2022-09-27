@@ -49,6 +49,7 @@ type (
 		QualityTimeout         string
 		ArtifactFile           string
 		CSOpenCoverReportPaths string
+		Libraries              string
 	}
 	// SonarReport it is the representation of .scannerwork/report-task.txt //
 	SonarReport struct {
@@ -225,6 +226,9 @@ func (p Plugin) Exec() error {
 	if len(p.Config.CSOpenCoverReportPaths) >= 1 {
 		args = append(args, "-Dsonar.cs.opencover.reportsPaths="+p.Config.CSOpenCoverReportPaths)
 	}
+	if len(p.Config.Libraries) > 1 {
+		args = append(args, "-Dsonar.java.libraries="+p.Config.Libraries)
+	}
 	os.Setenv("SONAR_USER_HOME", ".sonar")
 
 	fmt.Printf("sonar-scanner")
@@ -278,7 +282,7 @@ func (p Plugin) Exec() error {
 	fmt.Printf("==> SONAR PROJECT DASHBOARD <==\n")
 	fmt.Printf(p.Config.Host)
 	fmt.Printf(sonarDashStatic)
-	fmt.Printf(p.Config.Name)
+	fmt.Printf(p.Config.Key)
 	fmt.Printf("\n==> Harness CIE SonarQube Plugin with Quality Gateway <==\n\n")
 	//"Docker", p.Config.ArtifactFile, (p.Config.Host + sonarDashStatic + p.Config.Name), "Sonar", "Harness Sonar Plugin", []string{"Diego", "latest"})
 

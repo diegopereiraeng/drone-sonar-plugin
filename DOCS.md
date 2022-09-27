@@ -73,6 +73,7 @@ Safety first, the host and token are stored in Drone Secrets.
     * TRACE: Display DEBUG logs + the timings of all ElasticSearch queries and Web API calls executed by the SonarQube Scanner.
 * `showProfiling`: Display logs to see where the analyzer spends time. Default value `false`
 * `branchAnalysis`: Pass currently analysed branch to SonarQube. (Must not be active for initial scan!) Default value `false`
+* `libraries`: Comma-separated paths to files with third-party libraries (JAR or Zip files) used by your project. Wildcards can be used: `sonar.java.libraries=path/to/Library.jar,directory/**/*.jar`
 
 
 * `usingProperties`: Using the `sonar-project.properties` file in root directory as sonar parameters. (Not include `sonar_host` and
@@ -102,5 +103,8 @@ sonar-scanner \
   -Dsonar.projectName=Neptune/news \
   -Dsonar.projectVersion=1.0 \
   -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=60878847cea1a31d817f0deee3daa7868c431433
+  -Dsonar.login=60878847cea1a31d817f0deee3daa7868c431433 \
+  [ -Dsonar.java.libraries=target/dependency ]
 ```
+
+[ optional ]
